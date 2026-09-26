@@ -576,3 +576,49 @@ Everything below was tested from Codex on 2026-09-26 and works:
 - In-Vids finish that worked: `voiceover generate --scene N --voice Knox --script "..."`,
   `captions add`, delete the helper scene, `export` (1080x1920 MP4).
 - Each clip took about 2.5-3.5 min.
+
+## MUST RULE: character replace ("replace the person with this person")
+
+Applies whenever the user uploads/links a video and asks to replace the person in it,
+and to EVERY generation in this skill.
+
+1. Main character reference: ALWAYS `refs/main_character/main_character_sheet.jpg`
+   (unless the user supplies a different image for this job). Copy it into the project's
+   `refs/` first. Every single generation uses it:
+   - `ai generate` / `ai animate`: attach it (`--image` / the image argument).
+   - `ai edit` (no image input in Vids): open and look at the sheet before writing EACH
+     prompt, and put its full visual description (hair, face, glasses, outfit, colors,
+     style) in the prompt. Same wording in every piece.
+   - QC every piece against the sheet; regenerate only the pieces that drift.
+2. Vids AI Edit only accepts clips of 10 s or less. For any longer video, split it,
+   edit every piece, and stitch it back. Never skip a piece; never use Extend.
+   ```bash
+   python "<skill>/tools/fetch_reference.py" <url-or-file> <project>          # if it is a link
+   python "<skill>/tools/watch_video.py" <project>/source/source.mp4 <project>/watch
+   python "<skill>/tools/segments.py" split <project>/source/source.mp4 <project>/pieces \
+       --transcript <project>/script/source_transcript.json --cuts <project>/watch/cuts.json
+   ```
+   Pieces are cut at scene cuts first, then sentence ends, never over 10 s
+   (`pieces/segments.json` lists them). A 30 s video becomes 3-4 pieces.
+3. For each piece N, in order (one at a time on the same Vids project):
+   ```bash
+   gvids ai edit VID <project>/pieces/NN_source_muted.mp4 \
+     --prompt-file <project>/prompts/NN_prompt.txt --insert new-scene --timeout 14m
+   ```
+   Prompt = "Replace the person with the character described below; keep the source's
+   motion, pose, camera, timing, framing, background and props exactly" + the sheet
+   description + "no captions, no on-screen text".
+   Create the Vids project in the source's shape first (`gvids create "<name>" --format portrait`
+   for vertical video), because the edit follows the project format.
+4. Get each edited piece out as `<project>/edited/NN_edited.mp4`: `gvids export VID all.mp4`,
+   then cut it by the scene durations from `gvids scene list VID` (skip any helper scene).
+5. Stitch back, re-timed to the original lengths, with the ORIGINAL audio restored:
+   ```bash
+   python "<skill>/tools/segments.py" stitch <project>/pieces/segments.json <project>/edited \
+       <project>/final/replaced.mp4 --audio <project>/source/source.mp4 --size 1080x1920
+   ```
+   (Omit `--audio` only if the user wants new voice/captions; then mute the pieces in Vids.)
+6. Check the result: same character in every piece, cuts land where the source's cuts are,
+   audio in sync. Report which pieces were regenerated.
+
+Cost: one AI generation per piece (a 30 s video = 3-4). Tell the user the count first.
