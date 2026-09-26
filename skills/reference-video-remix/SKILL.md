@@ -493,3 +493,32 @@ dry, casual, slightly cocky, never shouting. Sample register: "...Go on." / "Is 
 QC against the refs: silver faceted hair, blue coat with filigree + gold trim, black vest,
 gloves; reject clips with a different coat color, modern/realistic skin, anime/cartoon
 style, big expressions, or an unrequested sword.
+
+## Getting the reference video (TikTok, YouTube Shorts, Instagram, X, or a file)
+
+The user can give a link instead of a file. Use the bundled tool, which does Step 1 too:
+
+```bash
+python "<skill>/tools/fetch_reference.py" "<tiktok-url-or-local-file>" <project_dir>
+```
+
+It writes:
+- `source/source.mp4`: the downloaded video (best MP4 quality, via yt-dlp)
+- `source/info.json`: duration, fps, size, audio, uploader, url
+- `source/contact_sheet.jpg`: 1 frame per second, tiled left to right, top to bottom (look at it to plan the 3 cuts)
+- `script/source_transcript.json` + `.txt`: timed transcript with word timestamps (faster-whisper; falls back to the CPU)
+
+Then continue at Step 2 (cut the 3 muted segments).
+
+To find references, the user can paste links; the agent can also browse TikTok in a
+browser to look at candidates, but download only the ones the user picks.
+
+Rules:
+- Public videos only; never log in to or bypass private or restricted accounts.
+- The downloaded source stays local in `source/` as the motion/timing blueprint. Only the
+  transformed result (new character, new script, new voice) is published, never the raw
+  source footage or its audio. Keep `info.json` so the original creator can be credited if the user wants.
+
+If a download fails with "Unexpected response" or similar, update yt-dlp first
+(`yt-dlp -U`, or `pip install -U yt-dlp`) and retry; TikTok changes often.
+Needs yt-dlp, ffmpeg/ffprobe, and `pip install faster-whisper` for the transcript.
