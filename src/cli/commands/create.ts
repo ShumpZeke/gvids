@@ -8,7 +8,7 @@ import { parseDocumentId, parseFolderId, parsePresentationId, vidEditUrl } from 
 import { withAutomation } from '../automation.js';
 import type { CommandContext } from '../context.js';
 import { action, type Kit } from '../kit.js';
-import { readOutlineFile, resolvePrompt } from './storyboard.js';
+import { readOutlineFile, resolvePrompt, uploadRefs } from './storyboard.js';
 
 interface CreateFlags {
   blank?: boolean;
@@ -21,6 +21,7 @@ interface CreateFlags {
   prompt?: string;
   promptFile?: string;
   outlineFile?: string;
+  ref?: string[];
   design?: string;
   format: VideoFormat;
   folder?: string;
@@ -63,6 +64,10 @@ export function registerCreateCommand(program: Command, kit: Kit): void {
     .option('-p, --prompt <text|file|->', 'generate an AI storyboard draft from a prompt')
     .option('--prompt-file <file>', 'read the storyboard prompt from a file')
     .option('--outline-file <file>', 'use your own outline for the storyboard draft')
+    .option(
+      '--ref <file...>',
+      'with --prompt: local reference images/videos for Gemini (uploaded to Drive, then @-mentioned)',
+    )
     .option('--design <n>', 'storyboard design to use (1-based)')
     .addOption(
       new Option('--format <format>', 'video format').choices([...VIDEO_FORMATS]).default('landscape'),
@@ -136,10 +141,18 @@ export function registerCreateCommand(program: Command, kit: Kit): void {
         }
         const landscapeOnly = mode.kind === 'template' || mode.kind === 'slides' || mode.kind === 'docs';
         if (landscapeOnly && format !== 'landscape') {
-          const what = mode.kind === 'template' ? 'Templates' : mode.kind === 'slides' ? 'Slides conversion' : 'Docs to video';
+          const what =
+            mode.kind === 'template'
+              ? 'Templates'
+              : mode.kind === 'slides'
+                ? 'Slides conversion'
+                : 'Docs to video';
           ctx.out.warn(`${what} runs on a landscape video; converting to ${format} afterwards.`);
         }
         const outline = flags.outlineFile ? await readOutlineFile(flags.outlineFile, ctx.io.cwd) : undefined;
+        if (flags.ref?.length && !prompt)
+          throw new UsageError('--ref applies to --prompt (the AI storyboard).');
+        const refNames = prompt ? await uploadRefs(ctx, flags.ref) : [];
         const design = flags.design ? parsePositiveInt(flags.design, '--design') : undefined;
         if ((outline || design) && !prompt)
           throw new UsageError('--outline-file and --design only apply with --prompt (the AI storyboard).');
@@ -160,6 +173,7 @@ export function registerCreateCommand(program: Command, kit: Kit): void {
                 prompt,
                 timeoutMs: ctx.timeoutMs(ctx.config.ai.timeoutMs),
                 ...(outline ? { outline } : {}),
+                ...(refNames.length ? { contextFiles: refNames } : {}),
                 ...(design ? { design } : {}),
               });
               if (title) await auto.rename(created.id, title);

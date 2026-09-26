@@ -223,6 +223,46 @@ export class DriveService {
     }
   }
 
+  /**
+   * Uploads a local image/video so Vids can use it as a reference (the storyboard
+   * @-mentions Drive files by name). Returns the Drive name to mention.
+   */
+  async uploadReference(localPath: string): Promise<{ id: string; name: string; url: string }> {
+    const path = await import('node:path');
+    const ext = path.extname(localPath).toLowerCase();
+    const types: Record<string, string> = {
+      '.jpg': 'image/jpeg',
+      '.jpeg': 'image/jpeg',
+      '.png': 'image/png',
+      '.webp': 'image/webp',
+      '.gif': 'image/gif',
+      '.mp4': 'video/mp4',
+      '.mov': 'video/quicktime',
+      '.webm': 'video/webm',
+      '.mp3': 'audio/mpeg',
+      '.wav': 'audio/wav',
+      '.pdf': 'application/pdf',
+    };
+    const mimeType = types[ext];
+    if (!mimeType) {
+      throw new UsageError(
+        `Reference files must be images, videos, audio or PDF; got "${ext || localPath}".`,
+      );
+    }
+    // A distinctive name, so the @-mention picks exactly this file.
+    const name = `gvids-ref-${Date.now().toString(36)}-${path.basename(localPath)}`;
+    try {
+      const created = await this.transport.uploadFile(
+        { name },
+        { mimeType, path: localPath },
+        'id,name,webViewLink',
+      );
+      return { id: created.id ?? '', name: created.name ?? name, url: created.webViewLink ?? '' };
+    } catch (err) {
+      throw mapGoogleApiError(err, { action: 'upload a reference file to Drive' });
+    }
+  }
+
   async about(): Promise<{ email?: string; name?: string; storageUsage?: number; storageLimit?: number }> {
     try {
       const info = await this.transport.about();

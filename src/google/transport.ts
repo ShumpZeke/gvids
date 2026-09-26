@@ -44,6 +44,12 @@ export interface DriveTransport {
     body: { name: string; mimeType: string; parents?: string[] },
     fields: string,
   ): Promise<DriveFileResource>;
+  /** Uploads a local file (multipart; fine for reference media up to a few hundred MB). */
+  uploadFile(
+    body: { name: string; parents?: string[] },
+    media: { mimeType: string; path: string },
+    fields: string,
+  ): Promise<DriveFileResource>;
   updateFile(
     id: string,
     body: { name?: string; trashed?: boolean; starred?: boolean },
@@ -234,6 +240,21 @@ export class GoogleDriveTransport implements DriveTransport {
     fields: string,
   ): Promise<DriveFileResource> {
     const res = await this.drive.files.create({ requestBody: body, fields, supportsAllDrives: true });
+    return res.data as DriveFileResource;
+  }
+
+  async uploadFile(
+    body: { name: string; parents?: string[] },
+    media: { mimeType: string; path: string },
+    fields: string,
+  ): Promise<DriveFileResource> {
+    const { createReadStream } = await import('node:fs');
+    const res = await this.drive.files.create({
+      requestBody: body,
+      media: { mimeType: media.mimeType, body: createReadStream(media.path) },
+      fields,
+      supportsAllDrives: true,
+    });
     return res.data as DriveFileResource;
   }
 

@@ -3,7 +3,13 @@ import path from 'node:path';
 import type { Command } from 'commander';
 import type { StoryboardResult } from '../../browser/operations/automation.js';
 import { UsageError } from '../../errors/errors.js';
-import { parsePositiveInt, parseStructured, readTextFile, readTextInput } from '../../utils/input.js';
+import {
+  parsePositiveInt,
+  parseStructured,
+  readTextFile,
+  readTextInput,
+  requireFile,
+} from '../../utils/input.js';
 import { parseVidId } from '../../vids/urls.js';
 import { withAutomation } from '../automation.js';
 import type { CommandContext } from '../context.js';
@@ -71,16 +77,42 @@ interface GenerateFlags extends PromptFlags {
   design?: string;
   outlineFile?: string;
   contextDriveFile?: string[];
+  ref?: string[];
   outlineOnly?: boolean;
 }
 
-function storyboardOptions(ctx: CommandContext, prompt: string, flags: GenerateFlags, outline?: string[]) {
+/**
+ * --ref: uploads local reference images/videos to Drive (Drive API) and returns
+ * their Drive names, which the storyboard @-mentions like --context-drive-file.
+ */
+export async function uploadRefs(ctx: CommandContext, refs: string[] | undefined): Promise<string[]> {
+  if (!refs?.length) return [];
+  const files = [];
+  for (const f of refs) files.push(await requireFile(f, ctx.io.cwd, '--ref'));
+  const drive = await ctx.drive();
+  const names: string[] = [];
+  for (const f of files) {
+    const up = await drive.uploadReference(f);
+    ctx.out.warn(`Uploaded reference ${f} to Drive as "${up.name}".`);
+    names.push(up.name);
+  }
+  return names;
+}
+
+function storyboardOptions(
+  ctx: CommandContext,
+  prompt: string,
+  flags: GenerateFlags,
+  outline?: string[],
+  refNames: string[] = [],
+) {
+  const contextFiles = [...(flags.contextDriveFile ?? []), ...refNames];
   return {
     prompt,
     timeoutMs: ctx.timeoutMs(ctx.config.ai.timeoutMs),
     ...(flags.design ? { design: parsePositiveInt(flags.design, '--design') } : {}),
     ...(outline ? { outline } : {}),
-    ...(flags.contextDriveFile?.length ? { contextFiles: flags.contextDriveFile } : {}),
+    ...(contextFiles.length ? { contextFiles } : {}),
     ...(flags.outlineOnly ? { outlineOnly: true } : {}),
   };
 }
@@ -95,6 +127,10 @@ function addGenerateFlags(cmd: Command): Command {
       'replace Gemini’s outline with your own topics (JSON/YAML list or one per line)',
     )
     .option('--context-drive-file <name...>', 'Drive files to @-mention as context (experimental)')
+    .option(
+      '--ref <file...>',
+      'local reference images/videos: uploaded to Drive, then @-mentioned (Drive API)',
+    )
     .option('--outline-only', 'stop after the outline and print it (no draft is created)');
 }
 
@@ -117,7 +153,7 @@ export function registerStoryboardCommands(program: Command, kit: Kit): void {
       const id = parseVidId(idArg);
       const prompt = (await resolvePrompt(ctx, flags, true))!;
       const outline = flags.outlineFile ? await readOutlineFile(flags.outlineFile, ctx.io.cwd) : undefined;
-      const options = storyboardOptions(ctx, prompt, flags, outline);
+      const options = storyboardOptions(ctx, prompt, flags, outline, await uploadRefs(ctx, flags.ref));
       const result = await withAutomation(ctx, 'Generating storyboard', (auto) =>
         auto.storyboard(id, options),
       );
@@ -137,7 +173,7 @@ export function registerStoryboardCommands(program: Command, kit: Kit): void {
       const prompt = (await resolvePrompt(ctx, flags, true))!;
       const outline = flags.outlineFile ? await readOutlineFile(flags.outlineFile, ctx.io.cwd) : undefined;
       const options = {
-        ...storyboardOptions(ctx, prompt, flags, outline),
+        ...storyboardOptions(ctx, prompt, flags, outline, await uploadRefs(ctx, flags.ref)),
         retryOutline: parsePositiveInt(flags.attempts, '--attempts'),
       };
       const result = await withAutomation(ctx, 'Regenerating storyboard', (auto) =>

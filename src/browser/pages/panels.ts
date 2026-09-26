@@ -537,6 +537,8 @@ export class AiVideoPanel {
 
   /** Attaches local files via a tab-panel button (Ingredients / Add video / Add image). */
   async attachFiles(mode: AiVideoMode, buttonName: string | RegExp, files: string[]): Promise<void> {
+    // After a generation the panel shows the result with the prompt area collapsed ("Expand").
+    await this.expand();
     for (const file of files) {
       const chooser = armed(
         this.page.waitForEvent('filechooser', { timeout: this.editor.options.timeoutMs }),
@@ -575,8 +577,19 @@ export class AiVideoPanel {
     await uiStep(this.editor.ui, 'The AI video "Generate" button', async () => {
       await generate.waitFor({ timeout: this.editor.options.timeoutMs });
     });
+    // An added video/image uploads and processes first; Generate enables when it is ready.
+    const readyBy = Date.now() + 180_000;
+    while (!(await generate.isEnabled()) && Date.now() < readyBy) {
+      const availability = await detectAvailabilityProblem(this.page);
+      if (availability) {
+        throw new FeatureUnavailableError(`AI video: ${availability.message}`, { code: availability.code });
+      }
+      await sleep(1500);
+    }
     if (!(await generate.isEnabled())) {
-      throw new UsageError('Generate is disabled: add a prompt (and a source video/image for edit/animate).');
+      throw new UsageError('Generate is disabled: add a prompt (and a source video/image for edit/animate).', {
+        hint: 'Edit takes a source clip of 10 seconds or less.',
+      });
     }
     await generate.click();
     const resultInsert = this.page

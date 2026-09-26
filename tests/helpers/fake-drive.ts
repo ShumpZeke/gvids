@@ -94,6 +94,19 @@ export class FakeDriveTransport implements DriveTransport {
     return structuredClone(this.find(id));
   }
 
+  async uploadFile(
+    body: { name: string; parents?: string[] },
+    media: { mimeType: string; path: string },
+  ): Promise<DriveFileResource> {
+    this.record('uploadFile', { ...body, mimeType: media.mimeType });
+    return {
+      id: `up_${body.name}`,
+      name: body.name,
+      mimeType: media.mimeType,
+      webViewLink: 'https://drive.google.com/x',
+    };
+  }
+
   async createFile(body: { name: string; mimeType: string; parents?: string[] }): Promise<DriveFileResource> {
     this.record('createFile', body);
     const file: DriveFileResource = {

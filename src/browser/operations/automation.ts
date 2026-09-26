@@ -886,6 +886,12 @@ export class VidsAutomation {
     if (options.mode === 'edit') {
       if (!options.source) throw new UsageError('AI edit needs a source clip.');
       await panel.attachFiles('edit', AI_VIDEO_LABELS.addVideo, [await assertFile(options.source)]);
+      if (options.images?.length) {
+        // Since 2026-09-26 the Edit tab has no reference-image input; describe the look in the prompt.
+        this.logger.warn(
+          'AI edit does not take reference images; they were not attached. Describe the character in the prompt.',
+        );
+      }
     }
     if (options.mode === 'animate') {
       const image = options.source ?? options.images?.[0];

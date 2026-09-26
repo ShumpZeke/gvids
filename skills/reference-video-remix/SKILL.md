@@ -561,3 +561,18 @@ Everything below was tested from Codex on 2026-09-26 and works:
    lock -> `gvids ai edit` per clip with the main character sheet -> export + split -> TTS/captions/stitch.
 5. Confirm with the user before the 3 AI generations; everything before that is free.
 6. See the `gvids` skill's "This machine" section for account, test videos and quirks.
+
+## Lessons from the first full test (2026-09-26, portrait, 3 clips, ~12 min total)
+
+- Vids AI **Edit** takes a source clip of 10 s or less and has NO reference-image input:
+  `--image` is ignored for `ai edit`. Put the character description (hair, glasses, outfit,
+  style) in every prompt instead; it held the identity well across all 3 clips.
+  Reference images only attach on `ai generate` (Create tab, "Ingredients").
+- Model/quality/aspect are one "Generation settings" button now; the clip follows the
+  project's format, so create the project in the target format (`--format portrait`).
+- Generated clips come with their OWN invented speech audio. Mute every clip before adding
+  voiceover: `gvids media sound VID --object <video-object-id> --scene N --mute`
+  (object ids from `gvids text list VID --scene N`). Otherwise captions pick up the fake speech.
+- In-Vids finish that worked: `voiceover generate --scene N --voice Knox --script "..."`,
+  `captions add`, delete the helper scene, `export` (1080x1920 MP4).
+- Each clip took about 2.5-3.5 min.
