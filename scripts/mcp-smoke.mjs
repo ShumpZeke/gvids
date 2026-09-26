@@ -36,7 +36,7 @@ async function call(name, args) {
 
 try {
   const { tools } = await client.listTools();
-  check('lists 30 tools', tools.length === 30, `got ${tools.length}`);
+  check('lists 31 tools', tools.length === 31, `got ${tools.length}`);
   check(
     'every tool has annotations and an input schema',
     tools.every((t) => t.annotations && t.inputSchema?.type === 'object'),
@@ -50,7 +50,7 @@ try {
   check('vids_open returns the editor URL', open.env.ok && open.env.data.url.endsWith(`/d/${ID}/edit`));
 
   const listed = await call('vids_commands', { prefix: ['scene'] });
-  check('vids_commands filters by prefix', listed.env.ok && listed.env.data.count === 7);
+  check('vids_commands filters by prefix', listed.env.ok && listed.env.data.count === 8);
 
   const plan = await call('gvids', { args: ['scene', 'delete', ID, '2', '--dry-run'] });
   check(
