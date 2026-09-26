@@ -447,3 +447,49 @@ default because it gives exact caption timing.
 
 When done, remove the scratch video only if the user agrees: `gvids trash VID --yes`
 (recoverable for 30 days; never `gvids delete`).
+
+## Built-in character: Vergil (default main character)
+
+When the user says "Vergil", "my character", or gives no character image, use the
+bundled references in `refs/vergil/` (paths relative to this skill folder) for EVERY
+clip — generation, editing, animation, and QC:
+
+| File | Use for |
+|---|---|
+| `refs/vergil/vergil_turnaround_front_side_back.jpg` | Full-body identity: outfit, proportions, front/side/back. Primary `--image` for full/medium shots. |
+| `refs/vergil/vergil_face_expressions.jpg` | Face/hair lock and allowed expressions (neutral, slightly annoyed, dry/unimpressed). Primary `--image` for close-ups. |
+| `refs/vergil/vergil_moodboard_voice_vibe.jpg` | Acting, poses, voice direction. Read it when writing prompts, the script, and TTS direction. |
+
+Pass both identity sheets on every gvids AI call (Vids accepts several `--image`):
+
+```bash
+gvids ai edit VID source_segments/0N_source_muted.mp4 \
+  --image "<skill>/refs/vergil/vergil_turnaround_front_side_back.jpg" \
+  --image "<skill>/refs/vergil/vergil_face_expressions.jpg" \
+  --prompt-file prompts/0N_prompt.txt --aspect 9:16 --insert new-scene
+```
+
+Copy them into the project's `refs/` folder at the start so the package is self-contained.
+A user-supplied image overrides these only if the user says so.
+
+Character lock (add to every clip prompt):
+"Vergil from Devil May Cry, PS2/early-PS3 low-poly in-engine look: spiky swept-back
+silver-white hair built from large faceted polygons; pale skin; ice-blue eyes; sharp
+jaw; long royal-blue tailcoat with silver-white filigree embroidery down the front
+panels and a large ornate filigree pattern on the back, gold trim on all edges, rust-orange
+lining, high standing collar; gold-studded cuffs; black ribbed zip-up vest; black trousers;
+dark brown leather gloves; black knee-high boots with gold heel trim. Same design every clip."
+
+Katana: the reference sheet shows one, but the skill's rule stands — NO sword unless the
+user explicitly asks for it. Say "no sword, no weapon, hands empty" in prompts.
+
+Acting and voice (from the moodboard): composed, self-assured, speaks plainly, direct to
+camera, power in restraint. Expressions limited to neutral, slightly annoyed, dry/casually
+unimpressed, slightly cocky (small smirk at most). Typical gestures: arms crossed, one
+gloved hand raised in a small dismissive gesture, slight head turn. Voice: mid-low, calm,
+dry, casual, slightly cocky, never shouting. Sample register: "...Go on." / "Is that all?" /
+"Hmph." / "So be it."
+
+QC against the refs: silver faceted hair, blue coat with filigree + gold trim, black vest,
+gloves; reject clips with a different coat color, modern/realistic skin, anime/cartoon
+style, big expressions, or an unrequested sword.
