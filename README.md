@@ -69,21 +69,64 @@ ready", and still return the full status as `data`.
 Requirements: Node.js 22.12+, Google Chrome (or Edge; Playwright's Chromium also
 works), Windows, macOS or Linux.
 
+gvids is not on npm; install it from this repository.
+
+**1. Install**
+
 ```bash
-npm install -g gvids        # or from source: pnpm install && pnpm build && npm link
-gvids browser login         # a person signs in to Google once, in a normal window
-gvids doctor                # what works on this machine
+git clone https://github.com/ShumpZeke/gvids.git
+cd gvids
+corepack enable             # provides pnpm (or: npm install -g pnpm)
+pnpm install
+pnpm run build
+npm link                    # puts the `gvids` command on your PATH
+gvids --version
 ```
 
-`gvids browser login` is the one step that needs a person: they sign in (MFA and
-CAPTCHA included) in a dedicated profile (`~/.gvids/browser/profile`); gvids never
-sees the password. Everything else can be driven by an agent.
+If `pnpm install` does not download a browser and you have no Chrome/Edge, run
+`npx playwright install chromium`.
 
-**Optional: Drive API.** For `copy`, `move`, `delete`, `thumbnail`, sharing,
-advanced list filters and server-side MP4 rendering, create a Desktop OAuth client
-(Google Cloud console → enable the Drive API → Google Auth Platform → Clients →
-Desktop app), save it as `~/.gvids/client_secret.json`, and run `gvids auth login`.
+**2. Sign in to Google in the browser (required, once)**
+
+```bash
+gvids browser login         # a window opens: sign in to your Google account
+gvids doctor                # checks sign-in, browser and Vids access
+```
+
+This is the one step that needs a person: you sign in (MFA and CAPTCHA included)
+in a dedicated profile (`~/.gvids/browser/profile`); gvids never sees the
+password. Everything else can be driven by an agent. Your account needs Google
+Vids (Google Workspace or a Google AI plan).
+
+**3. Optional: Drive API (faster file operations)**
+
+Without it, sharing, copy, move, trash, rename and thumbnails still work through
+the Vids editor. With it they are faster, and you also get permanent delete,
+comments, version lists, advanced list filters and server-side MP4 export.
+
+1. In the [Google Cloud console](https://console.cloud.google.com/), create a
+   project and enable the **Google Drive API**.
+2. Google Auth Platform → **Branding**: app name, your email. → **Audience**:
+   External; add yourself as a test user (or publish the app, which needs a
+   homepage and privacy-policy URL, so sign-ins don't expire every 7 days).
+3. **Clients** → Create client → **Desktop app** → download the JSON.
+4. Save it as `~/.gvids/client_secret.json`, then:
+
+```bash
+gvids auth login            # approve Drive access in the browser
+gvids auth status
+```
+
 Details and CI variables: [docs/authentication.md](docs/authentication.md).
+
+**4. Optional: use it from an agent**
+
+- Claude Code skill: copy `skills/gvids` into `~/.claude/skills/`.
+- MCP: add `gvids mcp` as a stdio server (see [MCP](#mcp) below).
+- Any agent: `gvids guide` prints the full agent contract.
+
+**Update:** `git pull && pnpm install && pnpm run build`.
+**Uninstall:** `npm unlink -g gvids`, then delete `~/.gvids`.
 
 ## What agents can do
 
