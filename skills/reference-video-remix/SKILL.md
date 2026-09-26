@@ -557,3 +557,17 @@ Format observed in two videos ("chinese barbers", "best doctors in the world"):
   -> merch plug. ~2.5 words/s, deadpan.
 - Captions: big white bold sans with black outline, 2 lines max, lower third, phrase by phrase.
 Mimic the STRUCTURE and pacing, not the exact lines; write new specifics for the new topic.
+
+## Environment checklist (read first, every run)
+
+Everything below was tested from Codex on 2026-09-26 and works:
+1. `gvids doctor` -> must say ready (Google sign-in and Drive API are already done).
+2. Tools: `yt-dlp`, `ffmpeg`, `ffprobe`, `python` with `faster-whisper` are installed.
+   If a TikTok download fails, run `yt-dlp -U` and retry (it fixed TikTok once already).
+3. This skill's folder: `C:\Users\vardh\.codex\skills\reference-video-remix` ->
+   `tools/fetch_reference.py`, `tools/watch_video.py`, `refs/vergil/*.jpg`, `templates/`.
+4. Pipeline: fetch_reference (download + transcript) -> watch_video (look at every sheet)
+   -> plan 3 cuts from `cuts.json` -> cut muted segments -> script -> prompts with the Vergil
+   lock -> `gvids ai edit` per clip with both Vergil sheets -> export + split -> TTS/captions/stitch.
+5. Confirm with the user before the 3 AI generations; everything before that is free.
+6. See the `gvids` skill's "This machine" section for account, test videos and quirks.
