@@ -522,3 +522,38 @@ Rules:
 If a download fails with "Unexpected response" or similar, update yt-dlp first
 (`yt-dlp -U`, or `pip install -U yt-dlp`) and retry; TikTok changes often.
 Needs yt-dlp, ffmpeg/ffprobe, and `pip install faster-whisper` for the transcript.
+
+## Watching a video (understand it before remixing)
+
+You cannot play video, so turn it into things you can read and see:
+
+```bash
+python "<skill>/tools/watch_video.py" <project>/source/source.mp4 <project>/watch \
+  --transcript <project>/script/source_transcript.json
+```
+
+Output in `<project>/watch/`:
+- `WATCH.md`: duration, cut times, transcript, and a timeline (time -> frame file -> words spoken, CUT marks new shots)
+- `sheet_1.jpg`, `sheet_2.jpg`, ...: 12 frames each (4 wide, 3 high), in time order, cells shaped like the video
+- `frames/f_<seconds>.jpg`: every sampled frame (1 per second + just after each cut)
+- `cuts.json`, `transcript.json`
+
+Read `WATCH.md`, then OPEN EVERY SHEET IMAGE and write a short breakdown before planning:
+shots and framing per cut, camera moves, gestures/poses per line, props, location,
+on-screen caption style, and the joke beats (setup -> specifics -> punchline -> tag).
+Use `--every 0.5` for fast-cut videos; `--scene 0.2` if cuts are missed.
+Use the cut times from `cuts.json` as the preferred segment boundaries in Step 2.
+
+## Creator reference: Luca / @santeluca (studied 2026-09-26)
+
+Account: https://www.tiktok.com/@santeluca (list recent videos with
+`yt-dlp --flat-playlist --playlist-end 10 --print "%(id)s %(duration)s %(title)s" https://www.tiktok.com/@santeluca`).
+Format observed in two videos ("chinese barbers", "best doctors in the world"):
+- 22-26 s, landscape or near-square, 3-5 shots; cuts every ~5-10 s, usually wide -> close -> wide.
+- A white-haired video-game-style character (goggles, red sweater, camo pants) in a detailed
+  3D scene (street barber / luxury clinic); mostly seated, small hand gestures, direct-ish address.
+- Structure: bold opinion (1 line) -> 3-4 escalating, oddly specific details (prices, years,
+  times) -> short personal punchline -> the tagline "You met me at a very ___ time in my life"
+  -> merch plug. ~2.5 words/s, deadpan.
+- Captions: big white bold sans with black outline, 2 lines max, lower third, phrase by phrase.
+Mimic the STRUCTURE and pacing, not the exact lines; write new specifics for the new topic.
