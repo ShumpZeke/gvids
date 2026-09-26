@@ -598,9 +598,15 @@ and to EVERY generation in this skill.
    python "<skill>/tools/segments.py" split <project>/source/source.mp4 <project>/pieces \
        --transcript <project>/script/source_transcript.json --cuts <project>/watch/cuts.json
    ```
-   Pieces are cut at scene cuts first, then sentence ends, never over 10 s
-   (`pieces/segments.json` lists them). A 30 s video becomes 3-4 pieces.
-3. For each piece N, in order (one at a time on the same Vids project):
+   Cut NICELY, never on a bare number: every cut goes where the speaker stops. The tool
+   picks, inside each 10 s window: a scene cut that falls in a pause, else the longest
+   pause between words (word timestamps + audio silence detection, sentence ends preferred),
+   and only as a last resort the 10 s mark. It never cuts mid-word. Pieces are muted copies
+   of the ORIGINAL video (`pieces/NN_source_muted.mp4`, listed in `pieces/segments.json`).
+   A 30 s video becomes 3-4 pieces. Look at the cut list and fix any cut that lands mid-action.
+3. For each piece N, in order (one at a time on the same Vids project), upload THAT ORIGINAL
+   PIECE into Edit as the source video (always; never edit from text alone, never reuse
+   another piece):
    ```bash
    gvids ai edit VID <project>/pieces/NN_source_muted.mp4 \
      --prompt-file <project>/prompts/NN_prompt.txt --insert new-scene --timeout 14m

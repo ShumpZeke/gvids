@@ -1,6 +1,7 @@
 """Split a video into <=10 s pieces for Vids AI Edit, and stitch the edited pieces back.
 
-Split (muted pieces, cut at natural points: scene cuts, then speech pauses, else hard 10 s):
+Split (muted pieces of the ORIGINAL video, cut where the speaker stops: scene cuts inside a
+pause, else the longest pause from word timestamps + silence detection; never mid-word):
   python segments.py split <video.mp4> <out_dir> [--max 10] [--min 3] [--transcript t.json] [--cuts cuts.json]
     -> out_dir/NN_source_muted.mp4 + out_dir/segments.json [{"n","start","end"}]
 
@@ -12,6 +13,7 @@ Stitch (edited pieces in order, re-timed to the original lengths, original audio
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -28,19 +30,39 @@ def duration(path: Path) -> float:
     return float(run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)]).strip())
 
 
-def plan(total: float, max_len: float, min_len: float, cuts: list[float], pauses: list[float]) -> list[tuple[float, float]]:
-    """Greedy: from each start, end at the latest scene cut, else latest pause, within max_len."""
+def silences(video: Path) -> list[tuple[float, float]]:
+    """Quiet stretches (>= 0.25 s under -35 dB): where the speaker stops."""
+    r = subprocess.run(["ffmpeg", "-hide_banner", "-i", str(video), "-af", "silencedetect=noise=-35dB:d=0.25",
+                        "-f", "null", "-"], capture_output=True, text=True)
+    starts = [float(x) for x in re.findall(r"silence_start: ([0-9.]+)", r.stderr)]
+    ends = [float(x) for x in re.findall(r"silence_end: ([0-9.]+)", r.stderr)]
+    return list(zip(starts, ends))
+
+
+def plan(total: float, max_len: float, min_len: float, cuts: list[float],
+         pauses: list[tuple[float, float, float]]) -> list[tuple[float, float]]:
+    """Choose each end point inside (start+min, start+max], best first:
+    1) a scene cut that falls in a pause, 2) the longest pause (speaker stops),
+    3) a scene cut, 4) only as a last resort the max length.
+    pauses = (middle_time, length, weight); cutting in the middle of a pause never clips a word."""
     out, start = [], 0.0
+    def in_pause(t: float) -> bool:
+        return any(abs(t - m) <= ln / 2 + 0.05 for m, ln, _ in pauses)
     while total - start > max_len:
         lo, hi = start + min_len, start + max_len
-        best = max((c for c in cuts if lo <= c <= hi), default=None)
-        if best is None:
-            best = max((p for p in pauses if lo <= p <= hi), default=None)
+        window_cuts = [c for c in cuts if lo <= c <= hi]
+        window_pauses = [p for p in pauses if lo <= p[0] <= hi]
+        best = next((c for c in sorted(window_cuts, reverse=True) if in_pause(c)), None)
+        if best is None and window_pauses:
+            # Longest pause wins; later ones break ties so pieces stay long.
+            best = max(window_pauses, key=lambda p: (round(p[1] * p[2], 2), p[0]))[0]
+        if best is None and window_cuts:
+            best = max(window_cuts)
         if best is None:
             best = hi
         out.append((round(start, 2), round(best, 2)))
         start = best
-    if out and total - start < min_len:  # fold a tiny tail into the previous piece if it still fits
+    if out and total - start < min_len:
         prev_start, _ = out[-1]
         if total - prev_start <= max_len:
             out[-1] = (prev_start, round(total, 2))
@@ -54,12 +76,23 @@ def split(args: argparse.Namespace) -> None:
     out.mkdir(parents=True, exist_ok=True)
     total = duration(video)
     cuts = json.loads(Path(args.cuts).read_text()) if args.cuts and Path(args.cuts).exists() else []
-    pauses: list[float] = []
+    pauses: list[tuple[float, float, float]] = []
     if args.transcript and Path(args.transcript).exists():
         data = json.loads(Path(args.transcript).read_text(encoding="utf-8"))
         segs = data.get("segments", data) if isinstance(data, dict) else data
-        pauses = [s["end"] for s in segs]  # sentence ends
-    pieces = plan(total, args.max, args.min, sorted(cuts), sorted(pauses))
+        words = [w for sg in segs for w in sg.get("words", [])]
+        if words:  # gaps between words; sentence ends count double
+            for a, b in zip(words, words[1:]):
+                gap = b["start"] - a["end"]
+                if gap >= 0.15:
+                    end_of_sentence = a["word"].strip()[-1:] in ".?!"
+                    pauses.append(((a["end"] + b["start"]) / 2, gap, 2.0 if end_of_sentence else 1.0))
+        else:
+            for a, b in zip(segs, segs[1:]):
+                pauses.append(((a["end"] + b["start"]) / 2, max(b["start"] - a["end"], 0.2), 2.0))
+    for a, b in silences(video):  # the audio itself: catches pauses the transcript misses
+        pauses.append(((a + b) / 2, b - a, 1.5))
+    pieces = plan(total, args.max, args.min, sorted(cuts), pauses)
     info = []
     for i, (a, b) in enumerate(pieces, 1):
         target = out / f"{i:02d}_source_muted.mp4"
