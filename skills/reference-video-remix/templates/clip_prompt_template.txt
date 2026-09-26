@@ -1,0 +1,40 @@
+Create a vertical 9:16 video transformation from THIS EXACT source-video segment.
+
+REFERENCE PRIORITY:
+1. Source segment = camera movement, timing, body motion, pose, gestures, framing, environment, and object interaction.
+2. Character reference image = face, hairstyle, outfit, colors, proportions, identity.
+3. Style = PS2 / early-PS3 low-poly in-engine game cutscene.
+
+Do not invent a different scene when the source already defines the scene.
+
+STYLE:
+- obvious early-2000s console graphics
+- low-poly geometry
+- low-resolution textures
+- simple game lighting
+- slightly stiff old-game lip-sync
+- restrained facial animation
+- not photorealistic
+- not modern CGI
+- not cartoon-like
+
+ANIMATION:
+Keep the character calm and deadpan.
+Minimal eye movement.
+Minimal eyebrow movement.
+Minimal head movement.
+Minimal hand gestures unless required by source motion.
+No exaggerated reactions.
+No constant body sway.
+Humor comes from the dialogue and situation.
+
+CONTINUITY:
+Same exact character identity as the supplied reference.
+No unexplained outfit changes.
+No random weapons unless explicitly requested.
+
+DIALOGUE:
+[INSERT CLIP DIALOGUE]
+
+No baked subtitles.
+Preserve the source clip's pacing and shot structure.

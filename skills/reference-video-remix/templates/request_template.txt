@@ -1,0 +1,26 @@
+Use the reference-video-remix skill.
+
+SOURCE VIDEO:
+[attach video]
+
+TOPIC / NEW PREMISE:
+[example: Airbnb checkout fees / looksmaxxing zygos / Fortnite rage]
+
+MAIN CHARACTER:
+[attach character reference image]
+
+OPTIONAL SECONDARY REFERENCE:
+[attach if needed]
+
+REQUIREMENTS:
+- Preserve source shot timing, camera movement, poses, gestures, and visual rhythm.
+- Cut source into 3 muted segments, each <=10 seconds.
+- Transform each source segment independently. Do NOT use Extend.
+- Keep the same character appearance across all 3 clips.
+- PS2 / early-PS3 low-poly game style.
+- Restrained deadpan acting, minimal eye/emotion animation.
+- Automatically attempt TTS and local editing.
+- If TTS sounds bad, I will replace it.
+- Keep sponsor tag separate from the joke.
+- Final sponsor line: "Get your Goli NAD+ Gummies at Target."
+- Also output title, description, and hashtags.
