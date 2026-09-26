@@ -391,10 +391,10 @@ Do not dump long technical logs unless asked.
 Use only if campaign context requires it.
 
 Title pattern:
-`<Funny premise> 💀 #GOLINAD #Vergil #Goli #Target #FYP #Shorts`
+`<Funny premise> 💀 #GOLINAD #PS2Style #Goli #Target #FYP #Shorts`
 
 Description pattern:
-`<One-line joke summary>\n\nGet your Goli NAD+ Gummies at Target.\n\n#GOLINAD #Vergil #Goli #Target #FYP #ForYou #Shorts #GamingMemes #PS2 #Meme`
+`<One-line joke summary>\n\nGet your Goli NAD+ Gummies at Target.\n\n#GOLINAD #PS2Style #Goli #Target #FYP #ForYou #Shorts #GamingMemes #PS2 #Meme`
 
 ## Using Google Vids (gvids) as the video generator
 
@@ -448,17 +448,17 @@ default because it gives exact caption timing.
 When done, remove the scratch video only if the user agrees: `gvids trash VID --yes`
 (recoverable for 30 days; never `gvids delete`).
 
-## Built-in character: Vergil, suit version (default main character)
+## Built-in character: the silver-haired suit character (default main character)
 
-When the user says "Vergil", "my character", or gives no character image, use the
-bundled reference `refs/vergil/vergil_suit_sheet.jpg` (path relative to this skill
+When the user says "my character", "the suit guy", or gives no character image, use the
+bundled reference `refs/main_character/main_character_sheet.jpg` (path relative to this skill
 folder) for EVERY clip: generation, editing, animation, and QC. It holds front/side/back
 turnarounds, a face close-up, four expression/vibe shots, and three in-scene poses.
 
 Pass it on every gvids AI call:
 
 ```bash
-gvids ai edit VID source_segments/0N_source_muted.mp4   --image "<skill>/refs/vergil/vergil_suit_sheet.jpg"   --prompt-file prompts/0N_prompt.txt --aspect 9:16 --insert new-scene
+gvids ai edit VID source_segments/0N_source_muted.mp4   --image "<skill>/refs/main_character/main_character_sheet.jpg"   --prompt-file prompts/0N_prompt.txt --aspect 9:16 --insert new-scene
 ```
 
 Copy it into the project's `refs/` folder at the start so the package is self-contained.
@@ -555,9 +555,9 @@ Everything below was tested from Codex on 2026-09-26 and works:
 2. Tools: `yt-dlp`, `ffmpeg`, `ffprobe`, `python` with `faster-whisper` are installed.
    If a TikTok download fails, run `yt-dlp -U` and retry (it fixed TikTok once already).
 3. This skill's folder: `C:\Users\vardh\.codex\skills\reference-video-remix` ->
-   `tools/fetch_reference.py`, `tools/watch_video.py`, `refs/vergil/*.jpg`, `templates/`.
+   `tools/fetch_reference.py`, `tools/watch_video.py`, `refs/main_character/*.jpg`, `templates/`.
 4. Pipeline: fetch_reference (download + transcript) -> watch_video (look at every sheet)
-   -> plan 3 cuts from `cuts.json` -> cut muted segments -> script -> prompts with the Vergil
-   lock -> `gvids ai edit` per clip with the Vergil suit sheet -> export + split -> TTS/captions/stitch.
+   -> plan 3 cuts from `cuts.json` -> cut muted segments -> script -> prompts with the character
+   lock -> `gvids ai edit` per clip with the main character sheet -> export + split -> TTS/captions/stitch.
 5. Confirm with the user before the 3 AI generations; everything before that is free.
 6. See the `gvids` skill's "This machine" section for account, test videos and quirks.

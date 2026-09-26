@@ -4,7 +4,7 @@ Reusable skill for the workflow we've been doing:
 
 1. Give the agent a reference short-form video.
 2. Tell it the new topic/premise.
-3. Give it the Vergil/character reference image.
+3. Give it the main character reference image.
 4. The agent analyzes the source, rewrites the script to match pacing, cuts the source into 3 muted <=10s segments, generates one prompt per segment, renders each segment independently, adds TTS/captions, stitches locally, and exports the final video + title/description.
 
 ## Important design choice
@@ -19,6 +19,6 @@ If the generation CLI cannot take a source video as conditioning, the agent shou
 
 Use the reference-video-remix skill on this video.
 Topic: looksmaxxing / zygos.
-Main character: use my Vergil reference image.
+Main character: use my main character reference image.
 Keep the sponsor tag only at the end.
 Make the final video automatically. If TTS is bad, I'll replace it.
