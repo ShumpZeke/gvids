@@ -1,0 +1,75 @@
+[
+  {
+    "id": "1AbCdEfGhIjKlMnOpQrStUvWxYz0123456789vid1",
+    "name": "Biology: Photosynthesis",
+    "mimeType": "application/vnd.google-apps.vid",
+    "webViewLink": "https://docs.google.com/videos/d/1AbCdEfGhIjKlMnOpQrStUvWxYz0123456789vid1/edit?usp=drivesdk",
+    "createdTime": "2026-09-01T10:00:00.000Z",
+    "modifiedTime": "2026-09-20T12:30:00.000Z",
+    "owners": [{ "displayName": "Test User", "emailAddress": "owner@example.com", "me": true }],
+    "lastModifyingUser": { "displayName": "Test User", "emailAddress": "owner@example.com" },
+    "parents": ["0AFolderRootXYZ"],
+    "starred": false,
+    "trashed": false,
+    "shared": true,
+    "thumbnailLink": "https://lh3.googleusercontent.com/drive-storage/thumb=s220",
+    "capabilities": {
+      "canEdit": true,
+      "canShare": true,
+      "canDownload": true,
+      "canCopy": true,
+      "canTrash": true,
+      "canDelete": true,
+      "canRename": true,
+      "canMoveItemWithinDrive": true
+    }
+  },
+  {
+    "id": "1ZyXwVuTsRqPoNmLkJiHgFeDcBa9876543210vid2",
+    "name": "History Project",
+    "mimeType": "application/vnd.google-apps.vid",
+    "webViewLink": "https://docs.google.com/videos/d/1ZyXwVuTsRqPoNmLkJiHgFeDcBa9876543210vid2/edit",
+    "createdTime": "2026-08-15T09:00:00.000Z",
+    "modifiedTime": "2026-09-10T08:00:00.000Z",
+    "owners": [{ "displayName": "Colleague", "emailAddress": "colleague@example.com" }],
+    "parents": ["0AFolderShared"],
+    "starred": true,
+    "trashed": false,
+    "shared": true,
+    "capabilities": {
+      "canEdit": false,
+      "canShare": false,
+      "canDownload": true,
+      "canCopy": true,
+      "canTrash": false,
+      "canDelete": false,
+      "canRename": false,
+      "canMoveItemWithinDrive": false
+    }
+  },
+  {
+    "id": "1ShortcutToVid1ShortcutToVid1Shortcut00001",
+    "name": "Shortcut to Biology",
+    "mimeType": "application/vnd.google-apps.shortcut",
+    "shortcutDetails": {
+      "targetId": "1AbCdEfGhIjKlMnOpQrStUvWxYz0123456789vid1",
+      "targetMimeType": "application/vnd.google-apps.vid"
+    },
+    "owners": [{ "displayName": "Test User", "emailAddress": "owner@example.com", "me": true }],
+    "parents": ["0AFolderRootXYZ"]
+  },
+  {
+    "id": "1DocNotAVidDocNotAVidDocNotAVidDocNot0001",
+    "name": "Meeting notes",
+    "mimeType": "application/vnd.google-apps.document",
+    "owners": [{ "displayName": "Test User", "emailAddress": "owner@example.com", "me": true }],
+    "parents": ["0AFolderRootXYZ"]
+  },
+  {
+    "id": "0AFolderTargetFolderTargetFolderTarget01",
+    "name": "Target folder",
+    "mimeType": "application/vnd.google-apps.folder",
+    "owners": [{ "displayName": "Test User", "emailAddress": "owner@example.com", "me": true }],
+    "parents": ["root"]
+  }
+]

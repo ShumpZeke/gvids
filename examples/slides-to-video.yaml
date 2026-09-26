@@ -1,0 +1,15 @@
+# Convert a Google Slides deck (speaker notes become scene scripts) and share it.
+# Replace the presentation ID with your own.
+name: Quarterly review (video)
+format: landscape
+
+slides: https://docs.google.com/presentation/d/REPLACE_WITH_PRESENTATION_ID/edit
+
+share:
+  - email: teammate@example.com
+    role: commenter
+    notify: false
+
+export:
+  format: mp4
+  path: ./out/quarterly-review.mp4

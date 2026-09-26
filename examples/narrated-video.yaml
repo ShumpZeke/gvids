@@ -1,0 +1,26 @@
+# Per-scene scripts turned into AI voiceover narration.
+# Run:  gvids run examples/narrated-video.yaml
+name: Spanish Weather Forecast
+format: landscape
+
+scenes:
+  - title: El tiempo de hoy
+    script: |
+      Hola. Hoy vamos a hablar del tiempo en El Salvador.
+  - title: San Salvador
+    background: '#f9ab00'
+    script: |
+      En San Salvador hace calor, con temperaturas de treinta y dos grados.
+  - title: Santa Ana
+    script: |
+      En Santa Ana esperamos lluvias por la tarde. [calmly] No olviden el paraguas.
+    voiceover:
+      voice: Elio
+
+voiceover:
+  enabled: true
+  voice: Nyla
+
+export:
+  format: mp4
+  path: ./out/weather.mp4

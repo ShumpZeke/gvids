@@ -1,0 +1,19 @@
+name: Spanish Weather Forecast
+format: landscape
+storyboard:
+  prompt: |
+    Create a short Spanish weather report for El Salvador.
+scenes:
+  - title: Introduction
+    script: |
+      Hola. Hoy vamos a hablar del tiempo.
+  - title: San Salvador
+    media:
+      - san-salvador.jpg
+    script: |
+      En San Salvador hace calor.
+voiceover:
+  enabled: true
+export:
+  format: mp4
+  path: ./weather.mp4

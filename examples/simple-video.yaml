@@ -1,0 +1,20 @@
+# A blank video with three title cards, one image and an MP4 export.
+# Run:  gvids run examples/simple-video.yaml
+name: Simple gvids video
+format: landscape
+
+scenes:
+  - title: Welcome
+    background: '#101010'
+    text:
+      - text: Made from the command line with gvids
+        kind: subtitle
+  - title: A picture
+    media:
+      - assets/example.png # relative to this file
+  - title: Thanks for watching!
+    background: '#1a73e8'
+
+export:
+  format: mp4
+  path: ./out/simple-video.mp4

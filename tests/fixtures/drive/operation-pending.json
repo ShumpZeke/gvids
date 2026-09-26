@@ -1,0 +1,5 @@
+{
+  "name": "operations/download-abc123",
+  "done": false,
+  "metadata": { "@type": "type.googleapis.com/google.apps.drive.v3.DownloadFileMetadata" }
+}

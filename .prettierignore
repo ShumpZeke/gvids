@@ -1,0 +1,8 @@
+dist
+dist-check
+node_modules
+pnpm-lock.yaml
+.gvids-debug
+coverage
+docs/commands.md
+examples/out

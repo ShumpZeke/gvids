@@ -1,0 +1,16 @@
+[
+  {
+    "id": "perm-owner",
+    "type": "user",
+    "role": "owner",
+    "emailAddress": "owner@example.com",
+    "displayName": "Test User"
+  },
+  {
+    "id": "perm-reader",
+    "type": "user",
+    "role": "reader",
+    "emailAddress": "reader@example.com",
+    "displayName": "Reader"
+  }
+]

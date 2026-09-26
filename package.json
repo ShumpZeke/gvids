@@ -1,0 +1,72 @@
+{
+  "name": "gvids",
+  "version": "0.1.0",
+  "description": "Google Vids for AI agents: a JSON-first CLI and MCP server that creates, edits and exports Google Vids videos (Drive API + browser automation of the Vids editor).",
+  "keywords": [
+    "google-vids",
+    "google-drive",
+    "cli",
+    "video",
+    "automation",
+    "playwright",
+    "mcp"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "gvids": "dist/cli/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "AGENTS.md",
+    "docs",
+    "examples",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "clean": "node scripts/clean.mjs",
+    "build": "node scripts/clean.mjs && tsc -p tsconfig.build.json",
+    "dev": "tsx src/cli/index.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:live": "vitest run --config vitest.live.config.ts",
+    "prepack": "node scripts/clean.mjs && tsc -p tsconfig.build.json",
+    "docs:commands": "tsx scripts/generate-command-docs.ts",
+    "mcp:smoke": "node scripts/mcp-smoke.mjs",
+    "docs:check": "tsx scripts/generate-command-docs.ts --check",
+    "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm test && pnpm run docs:check"
+  },
+  "dependencies": {
+    "@googleapis/drive": "^26.0.0",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "@napi-rs/keyring": "^2.1.0",
+    "chalk": "^6.0.0",
+    "commander": "^15.0.0",
+    "gifenc": "^1.0.3",
+    "google-auth-library": "^11.1.0",
+    "open": "^11.0.4",
+    "pino": "^10.3.1",
+    "playwright": "^1.63.0",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.13.6",
+    "eslint": "^10.11.0",
+    "globals": "^17.12.0",
+    "prettier": "^3.9.8",
+    "tsx": "^4.23.15",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.70.1",
+    "vitest": "^5.0.1"
+  }
+}

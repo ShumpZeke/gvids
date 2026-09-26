@@ -1,0 +1,31 @@
+# Build output
+dist/
+dist-check/
+coverage/
+node_modules/
+
+# Secrets — never commit these
+client_secret*.json
+credentials*.json
+*.token.json
+tokens.json
+.env
+.env.*
+*.pem
+*.p12
+
+# gvids runtime state (tokens, browser profiles, jobs, caches)
+.gvids/
+.gvids-debug/
+**/browser-profile/
+downloads/
+examples/out/
+*.mp4
+*.gif
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/

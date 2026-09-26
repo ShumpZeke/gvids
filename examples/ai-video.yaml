@@ -1,0 +1,19 @@
+# Gemini storyboard draft plus one AI-generated clip (uses your Vids AI quota).
+# Run:  gvids run examples/ai-video.yaml --timeout 30m
+name: How volcanoes work
+format: landscape
+
+storyboard:
+  prompt: |
+    A 45 second explainer for 12-year-olds about how volcanoes form and erupt.
+    Friendly tone, simple words, end with a safety tip.
+  design: 2
+
+ai:
+  - prompt: Cinematic aerial shot of an erupting volcano at dusk, glowing lava rivers
+    scene: 2
+    aspect: landscape
+
+export:
+  format: mp4
+  path: ./out/volcanoes.mp4

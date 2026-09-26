@@ -1,0 +1,35 @@
+{
+  "detectedAt": "2026-09-22T12:00:00.000Z",
+  "account": { "drive": "owner@example.com", "browser": "owner@example.com" },
+  "probeVideo": "1AbCdEfGhIjKlMnOpQrStUvWxYz0123456789vid1",
+  "drive": [
+    { "key": "list", "label": "list vids", "state": "available", "via": "drive-api" },
+    {
+      "key": "mp4Download",
+      "label": "MP4 download (files.download)",
+      "state": "available",
+      "via": "drive-api"
+    }
+  ],
+  "ui": [
+    {
+      "key": "storyboard",
+      "label": "storyboard (Help me create)",
+      "state": "available",
+      "via": "browser",
+      "note": "landscape videos only"
+    },
+    { "key": "aiVideo", "label": "AI video generation", "state": "available", "via": "browser" }
+  ],
+  "unavailable": [
+    {
+      "key": "publicEditingApi",
+      "label": "direct public scene-editing API",
+      "state": "unavailable",
+      "via": "none"
+    }
+  ],
+  "ai": { "models": ["Omni 720p with audio"], "aspectRatios": ["Landscape 16:9", "Portrait 9:16"] },
+  "voices": 37,
+  "avatars": 53
+}

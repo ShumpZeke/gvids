@@ -1,0 +1,10 @@
+{
+  "name": "operations/download-abc123",
+  "done": true,
+  "metadata": { "@type": "type.googleapis.com/google.apps.drive.v3.DownloadFileMetadata" },
+  "response": {
+    "@type": "type.googleapis.com/google.apps.drive.v3.DownloadFileResponse",
+    "downloadUri": "https://www.googleapis.com/download/drive/v3/files/fake?alt=media&op=abc123",
+    "partialDownloadAllowed": false
+  }
+}

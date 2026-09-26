@@ -1,0 +1,36 @@
+# A fuller project: template scenes, extra scenes with text, narration,
+# an avatar presenter, a Drive folder, sharing and export.
+# Sharing with a whole domain is public sharing: run it with --yes once the
+# owner approved (gvids run batch-project.yaml --dry-run shows the plan first).
+# Run several projects in a row with a shell loop, e.g. PowerShell:
+#   Get-ChildItem projects\*.yaml | ForEach-Object { gvids run $_.FullName --yes }
+name: New hire onboarding — Week 1
+format: landscape
+template:
+  name: New employee onboarding
+  scenes: [1, 2, 3]
+folder: REPLACE_WITH_DRIVE_FOLDER_ID
+
+scenes:
+  - title: Welcome to the team
+  - title: Your first week
+    text:
+      - text: Monday — laptop setup
+        kind: body
+      - text: Wednesday — meet your buddy
+        kind: body
+    script: Here is what your first week looks like.
+    voiceover:
+      voice: Lani
+  - title: Questions?
+    avatar:
+      name: Finley
+      script: If you have any questions, ask your manager or your onboarding buddy. Welcome aboard!
+
+share:
+  - domain: example.com
+    role: reader
+
+export:
+  format: mp4
+  path: ./out/onboarding-week-1.mp4

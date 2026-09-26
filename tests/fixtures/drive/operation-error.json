@@ -1,0 +1,5 @@
+{
+  "name": "operations/download-err",
+  "done": true,
+  "error": { "code": 9, "message": "The video could not be rendered." }
+}
