@@ -254,6 +254,12 @@ export class LiveExecutor implements StepExecutor {
           }),
         };
       }
+      case 'image.generate': {
+        return { output: await (await this.auto()).generateImage(this.vid(job), num(p, 'scene'), { prompt: str(p, 'prompt'), timeoutMs: ai }) };
+      }
+      case 'music.generate': {
+        return { output: await (await this.auto()).generateMusic(this.vid(job), num(p, 'scene'), { prompt: str(p, 'prompt'), full: false, instrumental: true, timeoutMs: ai }) };
+      }
       case 'ai.generate': {
         const images = Array.isArray(p.images) ? (p.images as string[]).map((f) => this.file(f)) : undefined;
         const aspect = opt(p, 'aspect');

@@ -1,7 +1,7 @@
 {
   "name": "gvids",
   "version": "0.1.0",
-  "description": "Google Vids for AI agents: a JSON-first CLI and MCP server that creates, edits and exports Google Vids videos (Drive API + browser automation of the Vids editor).",
+  "description": "Agent-first Google Vids CLI and MCP server for Veo videos, AI images, cinematic studio workflows, and automated video editing.",
   "keywords": [
     "google-vids",
     "google-drive",
@@ -9,7 +9,17 @@
     "video",
     "automation",
     "playwright",
-    "mcp"
+    "mcp",
+    "veo",
+    "omni",
+    "ai-video-generator",
+    "ai-image-generator",
+    "cinematic-ai",
+    "agentic-video",
+    "video-generation",
+    "ai-workflows",
+    "content-creation",
+    "higgsfield-alternative"
   ],
   "license": "MIT",
   "type": "module",

@@ -32,6 +32,7 @@ import { registerFileCommands } from './commands/files.js';
 import { registerHistoryCommands } from './commands/history.js';
 import { registerJobCommands } from './commands/jobs.js';
 import { registerMcpCommand } from './commands/mcp.js';
+import { registerStudioCommands } from './commands/studio.js';
 import { registerSceneCommands } from './commands/scene.js';
 import { registerShareCommands } from './commands/share.js';
 import { registerStoryboardCommands } from './commands/storyboard.js';
@@ -105,6 +106,7 @@ export function createProgram(
   program.commandsGroup('Background work & integrations:');
   registerTaskCommands(program, kit);
   registerJobCommands(program, kit);
+  registerStudioCommands(program, kit);
   registerMcpCommand(program, kit);
 
   program.commandsGroup('Diagnostics & settings:');

@@ -217,6 +217,12 @@ export const COMMAND_META: Record<string, CommandMeta> = {
     note: 'Gemini drafts the script; --script-only adds nothing (still uses Gemini).',
   }),
 
+  // creative studio
+  'studio presets': read('local'),
+  'studio plan': read('local'),
+  'studio compile': write('local', { note: 'Writes a local YAML workflow only when --output is given.' }),
+  'studio run': write('browser', { slow: true, aiQuota: true, note: 'Composes multiple Google Vids AI operations into a resumable job.' }),
+
   // workflows
   run: write('drive|browser', {
     slow: true,

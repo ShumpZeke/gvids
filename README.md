@@ -146,6 +146,21 @@ requirements): [docs/commands.md](docs/commands.md). Editor features in depth:
 [docs/google-vids.md](docs/google-vids.md). Workflows:
 [docs/workflows.md](docs/workflows.md).
 
+## Cinematic Studio — agent-directed productions
+
+Compose multiple Google Vids image/video generations into one shot-based production,
+using camera-motion prompt presets, consistent art direction, reference images,
+voiceovers, music, resumable jobs, and MP4 exports. Works with CLI and MCP.
+
+```bash
+gvids studio presets
+gvids studio plan examples/cinematic-product.yaml
+gvids studio run examples/cinematic-product.yaml --headless --detach
+```
+
+See [the creative studio guide](docs/studio.md). This is a Higgsfield-inspired
+workflow composer, **not** a Higgsfield API; account quotas and availability still apply.
+
 ## Recipes
 
 ```bash

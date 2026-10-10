@@ -61,7 +61,7 @@ async function confirmPublicSharing(
 /** The workflow schema and planner (zod, yaml) load only for workflow commands. */
 const workflows = () => import('../../automation/workflow.js');
 
-async function execute(ctx: CommandContext, store: JobStore, job: JobRecord): Promise<JobRecord> {
+export async function executeJob(ctx: CommandContext, store: JobStore, job: JobRecord): Promise<JobRecord> {
   const { LiveExecutor } = await import('../../automation/executor.js');
   const executor = new LiveExecutor(ctx, path.dirname(job.workflowFile));
   const started = Date.now();
@@ -158,7 +158,7 @@ export function registerJobCommands(program: Command, kit: Kit): void {
         });
         ctx.out.info(`Job ${job.id} started (${steps.length} steps).`);
         try {
-          const done = await execute(ctx, store, job);
+          const done = await executeJob(ctx, store, job);
           ctx.out.result(done, renderJob);
         } catch (err) {
           ctx.out.info(`State saved. Resume with: gvids job resume ${job.id}`);
@@ -254,7 +254,7 @@ export function registerJobCommands(program: Command, kit: Kit): void {
         const pending = prepareResume(record);
         await store.save(record);
         ctx.out.info(`Resuming ${id}: ${pending} step(s) left.`);
-        const done = await execute(ctx, store, record);
+        const done = await executeJob(ctx, store, record);
         ctx.out.result(done, renderJob);
       }),
     );

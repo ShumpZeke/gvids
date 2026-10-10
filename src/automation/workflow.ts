@@ -31,6 +31,9 @@ const AiClipSchema = z.object({
   insert: z.enum(['new-scene', 'current-scene', 'none']).optional(),
 });
 
+const ImageShotSchema = z.object({ prompt: z.string().min(1) });
+const MusicShotSchema = z.object({ prompt: z.string().min(1) });
+
 const SceneSchema = z
   .object({
     title: z.string().optional(),
@@ -44,6 +47,8 @@ const SceneSchema = z
       .optional(),
     avatar: z.object({ name: z.string().optional(), script: z.string().optional() }).optional(),
     ai: AiClipSchema.omit({ scene: true }).optional(),
+    image: ImageShotSchema.optional(),
+    music: MusicShotSchema.optional(),
   })
   .strict();
 
@@ -153,6 +158,8 @@ export interface StepPlan {
     | 'voiceover'
     | 'avatar'
     | 'ai.generate'
+    | 'image.generate'
+    | 'music.generate'
     | 'move'
     | 'share'
     | 'export';
@@ -383,6 +390,12 @@ export function planWorkflow(workflow: Workflow): StepPlan[] {
         browser: true,
         params: { scene: n, script, avatar: scene.avatar.name },
       });
+    }
+    if (scene.image) {
+      add({ id: `${sid}.image`, type: 'image.generate', description: `Scene ${n}: AI image`, browser: true, params: { scene: n, prompt: scene.image.prompt } });
+    }
+    if (scene.music) {
+      add({ id: `${sid}.music`, type: 'music.generate', description: `Scene ${n}: AI music`, browser: true, params: { scene: n, prompt: scene.music.prompt } });
     }
     if (scene.ai) {
       add({

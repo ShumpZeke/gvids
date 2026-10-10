@@ -1,0 +1,17 @@
+version: 1
+name: Cinematic Headphones Launch
+format: landscape
+look: commercial
+style: Luxury product video, dark studio, consistent metallic headphones
+shots:
+  - prompt: Premium headphones on an obsidian pedestal
+    camera: orbit
+    duration: 8
+  - prompt: Macro details of brushed-metal earcups
+    camera: dolly-in
+    framing: macro
+    duration: 8
+  - prompt: Dramatic hero reveal in a black studio
+    camera: crane-up
+    narration: Experience sound in a new dimension.
+    duration: 8
